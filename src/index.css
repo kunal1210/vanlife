@@ -283,3 +283,38 @@ footer p {
 .bottom_pane .content {
   width: 100%;
 }
+.vans_list_wrp {
+  padding: 30px 0;
+}
+
+.item_list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  row-gap: 40px;
+}
+
+.list-item {
+  width: 30%;
+  box-shadow: 0 2px 6px 0 #20212447;
+}
+
+.item_info {
+  padding: 20px;
+}
+
+.typ_btn .btn {
+  text-transform: uppercase;
+}
+.item_img {
+  min-height: 270px;
+  overflow: hidden;
+  position: relative;
+}
+
+.item_img img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
