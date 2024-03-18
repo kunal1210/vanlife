@@ -1,8 +1,9 @@
-import { createServer, Model } from "miragejs";
+import { createServer, Model, Response } from "miragejs";
 
 createServer({
   models: {
     vans: Model,
+    users: Model,
   },
 
   seeds(server) {
@@ -15,6 +16,7 @@ createServer({
       imageUrl:
         "https://assets.scrimba.com/advanced-react/react-router/modest-explorer.png",
       type: "simple",
+      hostId: "123",
     });
     server.create("van", {
       id: "2",
@@ -25,6 +27,7 @@ createServer({
       imageUrl:
         "https://assets.scrimba.com/advanced-react/react-router/beach-bum.png",
       type: "rugged",
+      hostId: "091",
     });
     server.create("van", {
       id: "3",
@@ -35,6 +38,7 @@ createServer({
       imageUrl:
         "https://assets.scrimba.com/advanced-react/react-router/reliable-red.png",
       type: "luxury",
+      hostId: "522",
     });
     server.create("van", {
       id: "4",
@@ -45,6 +49,7 @@ createServer({
       imageUrl:
         "https://assets.scrimba.com/advanced-react/react-router/dreamfinder.png",
       type: "simple",
+      hostId: "728",
     });
     server.create("van", {
       id: "5",
@@ -55,6 +60,7 @@ createServer({
       imageUrl:
         "https://assets.scrimba.com/advanced-react/react-router/the-cruiser.png",
       type: "luxury",
+      hostId: "123",
     });
     server.create("van", {
       id: "6",
@@ -64,21 +70,126 @@ createServer({
         "With this van, you can take your travel life to the next level. The Green Wonder is a sustainable vehicle that's perfect for people who are looking for a stylish, eco-friendly mode of transport that can go anywhere.",
       imageUrl:
         "https://assets.scrimba.com/advanced-react/react-router/green-wonder.png",
+      type: "simple",
+      hostId: "200",
+    });
+    server.create("van", {
+      id: "7",
+      name: "Blue Wonder",
+      price: 110,
+      description:
+        "With this van, you can take your travel life to the next level. The Green Wonder is a sustainable vehicle that's perfect for people who are looking for a stylish, eco-friendly mode of transport that can go anywhere.",
+      imageUrl:
+        "https://assets.scrimba.com/advanced-react/react-router/green-wonder.png",
       type: "rugged",
+      hostId: "123",
+    });
+    server.create("van", {
+      id: "8",
+      name: "Adventurer",
+      price: 65,
+      description:
+        "With this van, you can take your travel life to the next level. The Green Wonder is a sustainable vehicle that's perfect for people who are looking for a stylish, eco-friendly mode of transport that can go anywhere.",
+      imageUrl:
+        "https://assets.scrimba.com/advanced-react/react-router/green-wonder.png",
+      type: "luxury",
+      hostId: "249",
+    });
+    server.create("van", {
+      id: "9",
+      name: "Sky Rider",
+      price: 90,
+      description:
+        "With this van, you can take your travel life to the next level. The Green Wonder is a sustainable vehicle that's perfect for people who are looking for a stylish, eco-friendly mode of transport that can go anywhere.",
+      imageUrl:
+        "https://assets.scrimba.com/advanced-react/react-router/green-wonder.png",
+      type: "rugged",
+      hostId: "123",
+    });
+    server.create("van", {
+      id: "10",
+      name: "Wilderness Home",
+      price: 100,
+      description:
+        "With this van, you can take your travel life to the next level. The Green Wonder is a sustainable vehicle that's perfect for people who are looking for a stylish, eco-friendly mode of transport that can go anywhere.",
+      imageUrl:
+        "https://assets.scrimba.com/advanced-react/react-router/green-wonder.png",
+      type: "luxury",
+      hostId: "038",
+    });
+    server.create("van", {
+      id: "11",
+      name: "Starlight",
+      price: 80,
+      description:
+        "With this van, you can take your travel life to the next level. The Green Wonder is a sustainable vehicle that's perfect for people who are looking for a stylish, eco-friendly mode of transport that can go anywhere.",
+      imageUrl:
+        "https://assets.scrimba.com/advanced-react/react-router/green-wonder.png",
+      type: "rugged",
+      hostId: "872",
+    });
+    server.create("van", {
+      id: "12",
+      name: "Backcountry Master",
+      price: 85,
+      description:
+        "With this van, you can take your travel life to the next level. The Green Wonder is a sustainable vehicle that's perfect for people who are looking for a stylish, eco-friendly mode of transport that can go anywhere.",
+      imageUrl:
+        "https://assets.scrimba.com/advanced-react/react-router/green-wonder.png",
+      type: "simple",
+      hostId: "123",
+    });
+    server.create("user", {
+      id: "123",
+      email: "user@vanlife.com",
+      password: "van123",
+      name: "Patrick",
     });
   },
 
   routes() {
     this.namespace = "api";
+    this.passthrough("https://firestore.googleapis.com/**");
     this.logging = false;
 
     this.get("/vans", (schema, request) => {
+      // return new Response(400, {}, { error: 'Error fetching vans' });
       return schema.vans.all();
     });
 
     this.get("/vans/:id", (schema, request) => {
       const id = request.params.id;
       return schema.vans.find(id);
+    });
+
+    this.get("/host/vans", (schema, request) => {
+      // Hard-code the hostId for now
+      return schema.vans.where({ hostId: "123" });
+    });
+
+    this.get("/host/vans/:id", (schema, request) => {
+      // Hard-code the hostId for now
+      const id = request.params.id;
+      return schema.vans.findBy({ id, hostId: "123" });
+    });
+
+    this.post("/login", (schema, request) => {
+      const { email, password } = JSON.parse(request.requestBody);
+
+      const foundUser = schema.users.findBy({ email, password });
+      if (!foundUser) {
+        return new Response(
+          401,
+          {},
+          { message: "No user with those credentials found!" }
+        );
+      }
+
+      foundUser.password = undefined;
+      return {
+        user: foundUser,
+        token: "Enjoy your pizza, here's your tokens.",
+      };
     });
   },
 });

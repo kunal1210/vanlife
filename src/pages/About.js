@@ -28,7 +28,7 @@ const About = () => {
           <div className="content">
             <h3>Your destination is waiting. Your van is ready.</h3>
             <br />
-            <Link to="/vans" className="btn btn_black">
+            <Link to="../vans" className="btn btn_black">
               Explore our vans
             </Link>
           </div>
